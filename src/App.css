@@ -48,3 +48,23 @@
 #todolist div {
     user-select: none;
 }
+
+#todolist .delete {
+    font-weight: bold;
+    margin-left: 10px;
+    font-size: .8em;
+    visibility: hidden;
+    padding: 0 5px;
+    transition: .2s all;
+    color: white;
+}
+
+#todolist div:hover .delete {
+    visibility: visible;
+    color: #666;
+}
+
+#todolist .delete:hover {
+    visibility: visible;
+    color: red !important;
+}

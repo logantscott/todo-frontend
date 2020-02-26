@@ -49,11 +49,33 @@ export class TodoApp extends Component {
         console.log(data.body)
     }
 
+    // handle deleting tasks
+    handleDelete = async(e) => {
+        const newTodos = [...this.state.todos]
+        newTodos.splice(this.state.todos.findIndex(el => {
+            return el.id === Number(e.target.id.substr(0,1))
+        }), 1)
+        this.setState({
+            todos: newTodos
+        })
+
+        this.state.todos.findIndex(el => {
+            return el.id === Number(e.target.id.substr(0,1))
+        })
+
+        const params = {
+            id: Number(e.target.id.substr(0,1))
+        }
+
+        const data = await deleteTodo(params);
+        console.log(data.body)
+    }
+
     render() {
         return (
             <div>
                 <AddTodoForm handleAddInput={this.handleAddInput} addInput={this.state.addInput} handleAddSubmit={this.handleAddSubmit} />
-                <TodoList todos={this.state.todos} handleToggle={this.handleToggle} />
+                <TodoList todos={this.state.todos} handleToggle={this.handleToggle} handleDelete={this.handleDelete} />
             </div>
         )
     }
