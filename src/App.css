@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+#todolist .true {
+    text-decoration: line-through;
+}
+
+#todolist .false {
+    
+}
+
+#todolist div {
+    user-select: none;
+}

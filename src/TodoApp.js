@@ -37,11 +37,23 @@ export class TodoApp extends Component {
         }
     }
 
+    // handle completing/uncompleting tasks
+    handleToggle = async(e) => {
+        const params = {
+            id: Number(e.target.id),
+            complete: !JSON.parse(e.target.className)
+        }
+
+        e.target.className = !JSON.parse(e.target.className);
+        const data = await updateTodo(params);
+        console.log(data.body)
+    }
+
     render() {
         return (
             <div>
                 <AddTodoForm handleAddInput={this.handleAddInput} addInput={this.state.addInput} handleAddSubmit={this.handleAddSubmit} />
-                <TodoList todos={this.state.todos} />
+                <TodoList todos={this.state.todos} handleToggle={this.handleToggle} />
             </div>
         )
     }
