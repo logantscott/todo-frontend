@@ -35,6 +35,13 @@ export class TodoApp extends Component {
 
             const data = await addTodo(params);
             console.log(data.body);
+            // this.state.todos.pop();
+            this.setState({
+                todos: this.state.todos.slice(0, -1)
+            })
+            this.setState({
+                todos: this.state.todos.concat([data.body])
+            })
             
         } else {
             alert('Please enter a task...');
@@ -57,15 +64,12 @@ export class TodoApp extends Component {
     handleDelete = async(e) => {
         const newTodos = [...this.state.todos]
         const delId = Number(e.target.id.substr(3,9));
+
         newTodos.splice(this.state.todos.findIndex(el => {
             return el.id === delId
         }), 1)
         this.setState({
             todos: newTodos
-        })
-
-        this.state.todos.findIndex(el => {
-            return el.id === delId
         })
 
         const params = {

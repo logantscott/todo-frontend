@@ -5,7 +5,7 @@ export class TodoList extends Component {
     render() {
         return (
             <div id="todolist">
-                {this.props.todos.map(todo => <TodoItem todo={todo} handleToggle={this.props.handleToggle} handleDelete={this.props.handleDelete} />)}
+                {this.props.todos.map(todo => <TodoItem todo={todo} handleToggle={this.props.handleToggle} handleDelete={this.props.handleDelete} key={todo.id} />)}
             </div>
         )
     }
