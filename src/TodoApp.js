@@ -19,19 +19,23 @@ export class TodoApp extends Component {
         this.setState({ addInput: e.target.value })
     }
 
-    handleAddSubmit = async() => {
+    handleAddSubmit = async(e) => {
+        e.preventDefault();
         if(this.state.addInput !== ''){ 
+            const params = { task: this.state.addInput }
+
             this.setState({
                 todos: this.state.todos.concat([{
                     id: Math.random(),
                     task: this.state.addInput,
                     complete: false
-                }])
+                }]),
+                addInput: ''
             })
-            
-            const params = { task: this.state.addInput }
+
             const data = await addTodo(params);
             console.log(data.body);
+            
         } else {
             alert('Please enter a task...');
         }
@@ -52,19 +56,20 @@ export class TodoApp extends Component {
     // handle deleting tasks
     handleDelete = async(e) => {
         const newTodos = [...this.state.todos]
+        const delId = Number(e.target.id.substr(3,9));
         newTodos.splice(this.state.todos.findIndex(el => {
-            return el.id === Number(e.target.id.substr(0,1))
+            return el.id === delId
         }), 1)
         this.setState({
             todos: newTodos
         })
 
         this.state.todos.findIndex(el => {
-            return el.id === Number(e.target.id.substr(0,1))
+            return el.id === delId
         })
 
         const params = {
-            id: Number(e.target.id.substr(0,1))
+            id: delId
         }
 
         const data = await deleteTodo(params);
