@@ -3,6 +3,8 @@ import { getTodos, addTodo, updateTodo, deleteTodo } from './api_services.js';
 import { AddTodoForm } from './AddTodoForm.js';
 import { TodoList } from './TodoList.js';
 
+const isLoggedIn = () => JSON.parse(localStorage.getItem('user'));
+
 export class TodoApp extends Component {
     state = {
         todos: [],
@@ -35,13 +37,8 @@ export class TodoApp extends Component {
 
             const data = await addTodo(params);
             console.log(data.body);
-            // this.state.todos.pop();
-            this.setState({
-                todos: this.state.todos.slice(0, -1)
-            })
-            this.setState({
-                todos: this.state.todos.concat([data.body])
-            })
+            this.setState({ todos: this.state.todos.slice(0, -1) })
+            this.setState({ todos: this.state.todos.concat([data.body]) })
             
         } else {
             alert('Please enter a task...');
@@ -49,42 +46,47 @@ export class TodoApp extends Component {
     }
 
     // handle completing/uncompleting tasks
-    handleToggle = async(e) => {
-        const params = {
-            id: Number(e.target.id),
-            complete: !JSON.parse(e.target.className)
-        }
+    handleToggle = async(todo) => {
+        const newTodos = [...this.state.todos];
+        const thisTodo = this.state.todos.findIndex(el => el.id === todo.id);
+        newTodos[thisTodo].complete = !todo.complete;
+        this.setState({ todos: newTodos });
 
-        e.target.className = !JSON.parse(e.target.className);
-        const data = await updateTodo(params);
-        console.log(data.body)
+        const data = await updateTodo(todo);
+        console.log(data.body);
     }
 
     // handle deleting tasks
-    handleDelete = async(e) => {
-        const newTodos = [...this.state.todos]
-        const delId = Number(e.target.id.substr(3,9));
+    handleDelete = async(todoId) => {
+        const newTodos = [...this.state.todos];
+        newTodos.splice(this.state.todos.findIndex(el => el.id === todoId), 1);
+        this.setState({ todos: newTodos });
 
-        newTodos.splice(this.state.todos.findIndex(el => {
-            return el.id === delId
-        }), 1)
-        this.setState({
-            todos: newTodos
-        })
-
-        const params = {
-            id: delId
-        }
-
+        const params = { id: todoId };
         const data = await deleteTodo(params);
-        console.log(data.body)
+        console.log(data.body);
     }
 
     render() {
         return (
             <div>
-                <AddTodoForm handleAddInput={this.handleAddInput} addInput={this.state.addInput} handleAddSubmit={this.handleAddSubmit} />
-                <TodoList todos={this.state.todos} handleToggle={this.handleToggle} handleDelete={this.handleDelete} />
+                {isLoggedIn() 
+                        ? <button onClick={() => {
+                            localStorage.clear();
+                            window.location.reload(false);
+                        }}>Logout</button>
+                : ''}
+                <br />
+                <AddTodoForm 
+                    handleAddInput={this.handleAddInput} 
+                    addInput={this.state.addInput} 
+                    handleAddSubmit={this.handleAddSubmit} 
+                />
+                <TodoList 
+                    todos={this.state.todos} 
+                    handleToggle={this.handleToggle} 
+                    handleDelete={this.handleDelete} 
+                />
             </div>
         )
     }
